@@ -80,7 +80,7 @@ def activity(profiles):
                           visits to appear after you have added the badge
                           for the first time."""}
                 
-Profiles().map(activity).show()    
+#Profiles().map(activity).show()    
 
 Profiles().map(countries).show('map',
                                label='Visitors',
