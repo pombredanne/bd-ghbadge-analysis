@@ -83,7 +83,7 @@ def activity(profiles):
 def num_events(profiles):
     s = 0
     for profile in profiles:
-        s += sum(1 for _ in profile['repos'].itervalues())
+        s += sum(len(ev) for ev in profile['repos'].itervalues())
     yield {'head': s}
     
 Profiles().map(num_events).show('text')    
