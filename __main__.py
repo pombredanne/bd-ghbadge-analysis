@@ -80,9 +80,15 @@ def activity(profiles):
                           visits to appear after you have added the badge
                           for the first time."""}
                 
-#Profiles().map(activity).show()    
+def num_events(profiles):
+    s = 0
+    for profile in profiles:
+        s += sum(1 for _ in profile['repos'].itervalues())
+    yield {'head': s}
+    
+Profiles().map(num_events).show('text')    
 
-Profiles().map(countries).show('map',
-                               label='Visitors',
-                               size=(12, 4))
+#Profiles().map(countries).show('map',
+#                               label='Visitors',
+#                               size=(12, 4))
 
