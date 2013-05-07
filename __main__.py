@@ -18,17 +18,53 @@ def growth(profiles):
             first = min(e['tstamp'] for e in events)
             repos[repo.split('?')[0]] = first.split('T')[0]
     c = Counter(repos.itervalues())
-    yield sorted(c.items())[1:]
-               
+    yield sorted(c.items())
+
+def weekly(daily):
+    w = {}
+    for day, count in daily.next():
+        d = datetime.strptime(day, TFORMAT)
+        _year, week, _dnum = d.isocalendar()
+        if week in w:
+            w[week][1] += count
+        else:
+            w[week] = [d.strftime('%m/%d'), count]
+    yield sorted(w.itervalues())
+
+def cumu(daily):
+    c = []
+    cum = 0
+    for day, count in daily.next():
+        c.append((day, cum))
+        cum += count
+    yield c
+         
 def num_events(profiles):
     s = 0
     for profile in profiles:
         s += sum(len(ev) for ev in profile['repos'].itervalues())
-    yield {'head': s}
-    
-Profiles().map(num_events).show('text')    
-Profiles().map(growth).show('line',
-                            size=(12, 4))
+        yield profile
+    text['total'] = s
+  
+Profiles().map(num_events)\
+          .map(growth)\
+          .show('line',
+                label='Daily new badges',
+                size=(12, 4))
+
+Profiles().map(growth)\
+          .map(cumu)\
+          .show('line',
+                label='Total number of badges',
+                size=(12, 4))
+        
+Profiles().map(growth)\
+          .map(weekly)\
+          .show('bar',
+                label='Weekly new badges',
+                size=(12, 4))
+
+Title("{total:,} badge views in total", text)    
 
 #Profiles().map(countries).show('map',
 #                               label='Visitors',
